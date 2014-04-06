@@ -16,7 +16,7 @@
 			function onMIDIMessage(event) {
 				console.log("Receive midi" + event);
 				if (output) {
-					output.send(event.data,window.performance.now());
+					output.send(event.data, window.performance.now());
 				}
 			}
 
@@ -78,28 +78,28 @@
 				} catch (e) {
 					console.error("Exception! Couldn't get i/o ports." + e);
 				}
-			}			
-			
+			}
+
 			function onSelectChar(obj) {
 				if (document.getElementById("mouseovermode").checked) {
 					sendChar(obj.id);
 				}
 			}
-			
+
 			function onClickChar(obj) {
 				if (!document.getElementById("mouseovermode").checked) {
 					sendChar(obj.id);
 				}
 			}
-			
+
 			function sendChar(c) {
 				var msg = nsx39.getSysEx(c);
 				if (msg) {
 					//showMidiMsg(msg);
-					output.send(msg,window.performance.now());
-				}				
+					output.send(msg, window.performance.now());
+				}
 			}
-				
+
 			function showMidiMsg(msg) {
 				var str = [];
 				for ( i = 0; i < msg.length; i++) {
@@ -112,14 +112,22 @@
 	</head>
 	<body>
 		<div class="container" style="padding:20px 0">
-			<h1>ポケミクてすと</h1>
 			<p>
-				<div>
-					文字を指定すると以降のNoteOnが指定した文字で発音します。<br>
-					文字をクリックして指定するモードとマウスオーバーするだけで指定できるモードがあります。<br>
-					ページ内のキーボードを使うときはクリック、外部キーボードを使うときはマウスオーバーモードがおすすめです。<br>
-					ブラウザはGoogle Chromeを使ってください。<br>
-					WebMIDIAPIを使うためにGoogle Chromeを設定する必要があります。詳しくは<a href="http://otonanokagaku.net/nsx39/app.html">ポケットミクアプリのページ</a>を参考にしてください。
+				<div class="container">
+					<div class="page-header" >
+						<h2>ポケミクてすと</h2>
+						<div>
+							文字を指定すると以降のNoteOnが指定した文字で発音します。
+							<br>
+							文字をクリックして指定するモードとマウスオーバーするだけで指定できるモードがあります。
+							<br>
+							ページ内のキーボードを使うときはクリック、外部キーボードを使うときはマウスオーバーモードがおすすめです。
+							<br>
+							ブラウザはGoogle Chromeを使ってください。
+							<br>
+							WebMIDIAPIを使うためにGoogle Chromeを設定する必要があります。詳しくは<a href="http://otonanokagaku.net/nsx39/app.html">ポケットミクアプリのページ</a>を参考にしてください。
+						</div>
+					</div>
 				</div>
 			</p>
 			<label class="control-label">MIDI In</label>
@@ -134,8 +142,8 @@
 			</div>
 			<div>
 				<label class="checkbox">
-				<input type="checkbox" id="mouseovermode">mouseover mode
-				</label>
+					<input type="checkbox" id="mouseovermode">
+					mouseover mode </label>
 			</div>
 			<div class="row">
 				<div class="col-sm-3" id="button_area">
