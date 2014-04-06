@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="jp">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>ポケミク てすと</title>
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<script src="js/nsx39.js"></script>
+		<script src="js/flatKeyboard.js"></script>
+
+		<script type="text/javascript">
+			var midiAccess = null;
+			var output = null;
+
+			function onMIDIMessage(event) {
+				console.log("Receive midi" + event);
+				if (output) {
+					output.send(event.data,window.performance.now());
+				}
+			}
+
+			function listInputsAndOutputs(access) {
+				var inputs = midiAccess.inputs();
+				var outputs = midiAccess.outputs();
+
+				console.log("inputs:" + inputs.length + " " + "outputs:" + outputs.length);
+				for ( i = 0; i < inputs.length; i++) {
+					console.log("Input port #" + i + ": type:'" + inputs[i].type + "' id:'" + inputs[i].id + "' manufacturer:'" + inputs[i].manufacturer + "' name:'" + inputs[i].name + "' version:'" + inputs[i].version + "'");
+					var option = document.createElement("option");
+
+					option.setAttribute("value", "midiInput");
+					option.appendChild(document.createTextNode(inputs[i].name));
+					document.getElementById("midiInputSelect").appendChild(option);
+				}
+
+				for ( i = 0; i < outputs.length; i++) {
+					console.log("Output port #" + i + ": type:'" + outputs[i].type + "' id:'" + outputs[i].id + "' manufacturer:'" + outputs[i].manufacturer + "' name:'" + outputs[i].name + "' version:'" + outputs[i].version + "'");
+					var option = document.createElement("option");
+					option.setAttribute("value", "midiOuput");
+					option.appendChild(document.createTextNode(outputs[i].name));
+					document.getElementById("midiOutputSelect").appendChild(option);
+				}
+			}
+
+			function onMIDISuccess(access) {
+				midiAccess = access;
+				console.log("midi ready!");
+				listInputsAndOutputs(access);
+			}
+
+			function onMIDIFailure(msg) {
+				console.log("Failed to midi available- " + msg);
+			}
+
+			function selectMidiInput() {
+				var select = document.getElementById("midiInputSelect");
+				var options = document.getElementById("midiInputSelect").options;
+				var value = options.item(select.selectedIndex).value;
+				console.log("midi input selected: " + select.selectedIndex);
+				try {
+					var inputs = midiAccess.inputs();
+					var input = inputs[select.selectedIndex - 1];
+					input.onmidimessage = onMIDIMessage;
+				} catch (e) {
+					console.error("Exception! Couldn't get i/o ports." + e);
+				}
+			}
+
+			function selectMidiOutput() {
+				var select = document.getElementById("midiOutputSelect");
+				var options = document.getElementById("midiOutputSelect").options;
+				var value = options.item(select.selectedIndex).value;
+				console.log("midi output selected: " + select.selectedIndex);
+				try {
+					var outputs = midiAccess.outputs();
+					output = outputs[select.selectedIndex - 1];
+				} catch (e) {
+					console.error("Exception! Couldn't get i/o ports." + e);
+				}
+			}			
+			
+			function onSelectChar(obj) {
+				if (document.getElementById("mouseovermode").checked) {
+					sendChar(obj.id);
+				}
+			}
+			
+			function onClickChar(obj) {
+				if (!document.getElementById("mouseovermode").checked) {
+					sendChar(obj.id);
+				}
+			}
+			
+			function sendChar(c) {
+				var msg = nsx39.getSysEx(c);
+				if (msg) {
+					//showMidiMsg(msg);
+					output.send(msg,window.performance.now());
+				}				
+			}
+				
+			function showMidiMsg(msg) {
+				var str = [];
+				for ( i = 0; i < msg.length; i++) {
+					str += "0x" + msg[i].toString(16) + " ";
+				}
+				console.log(str);
+			}
+
+		</script>
+	</head>
+	<body>
+		<div class="container" style="padding:20px 0">
+			<h1>ポケミクてすと</h1>
+			<p>
+				<div>
+					文字を指定すると以降のNoteOnが指定した文字で発音します。<br>
+					文字をクリックして指定するモードとマウスオーバーするだけで指定できるモードがあります。<br>
+					ページ内のキーボードを使うときはクリック、外部キーボードを使うときはマウスオーバーモードがおすすめです。<br>
+					ブラウザはGoogle Chromeを使ってください。<br>
+					WebMIDIAPIを使うためにGoogle Chromeを設定する必要があります。詳しくは<a href="http://otonanokagaku.net/nsx39/app.html">ポケットミクアプリのページ</a>を参考にしてください。
+				</div>
+			</p>
+			<label class="control-label">MIDI In</label>
+			<select id="midiInputSelect" class="form-control" onchange="selectMidiInput()">
+				<option value="1">select input port</option>
+			</select>
+			<div class="form-group">
+				<label class="control-label">MIDI Out</label>
+				<select id="midiOutputSelect" class="form-control" onchange="selectMidiOutput()">
+					<option value="1">select output port</option>
+				</select>
+			</div>
+			<div>
+				<label class="checkbox">
+				<input type="checkbox" id="mouseovermode">mouseover mode
+				</label>
+			</div>
+			<div class="row">
+				<div class="col-sm-3" id="button_area">
+					<!- Button Area 後でスクリプトで作成 ->
+				</div>
+				<div class="col-sm-4" id="button_area2">
+					<!- Button Area2 後でスクリプトで作成 ->
+				</div>
+			</div>
+		</div>
+		<div class="container" style="width: 640px; margin:20px 0px 0px 55px;">
+			<div class="keyCanvasArea">
+				<canvas id="keyboard" height="0px"></canvas>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var element = document.createElement("div");
+			for (key in nsx39.textMap[1]) {
+				switch (key) {
+					case 'か':
+					case 'さ':
+					case 'た':
+					case 'な':
+					case 'は':
+					case 'ま':
+					case 'や':
+					case 'ら':
+					case 'わ':
+					case 'が':
+					case 'ざ':
+					case 'だ':
+					case 'ぱ':
+					case 'ば':
+						element.innerHTML += '<br>';
+						break;
+					default:
+						break;
+				}
+				element.innerHTML += '<button　type="button" id="' + key + '" class="btn btn-default btn-sm" onmouseover="onSelectChar(this)" onclick="onClickChar(this)">' + key + '</button>';
+			}
+			document.getElementById("button_area").appendChild(element);
+		</script>
+		<script type="text/javascript">
+			var element = document.createElement("div");
+			for (key in nsx39.textMap[2]) {
+				switch (key) {
+					case 'きゃ':
+					case 'すぃ':
+					case 'しゃ':
+					case 'しぇ':
+					case 'づぁ':
+					case 'てぃ':
+					case 'ちゃ':
+					case 'つぁ':
+					case 'にぁ':
+					case 'ひゃ':
+					case 'ふぃ':
+					case 'みゃ':
+					case 'りゃ':
+						element.innerHTML += '<br>';
+						break;
+					default:
+						break;
+				}
+				element.innerHTML += '<button　type="button" id="' + key + '" class="btn btn-default btn-sm" onmouseover="onSelectChar(this)" onclick="onClickChar(this)">' + key + '</button>';
+			}
+			document.getElementById("button_area2").appendChild(element);
+
+			var fKey = new FlatKeyboard("keyboard");
+			var timerId = setInterval(function() {
+				fKey.draw();
+			}, 80);
+			fKey.setConnected();
+			fKey.noteOn = function(noteNo) {
+				output.send([0x90, noteNo, 0x7f]);
+			};
+			fKey.noteOff = function(noteNo) {
+				var now = window.performance.now();
+				output.send([0x80, noteNo, 0x00], now + 200);
+			};
+		</script>
+		<script  type="text/javascript">
+			midiAccess = navigator.requestMIDIAccess({
+				sysex : true
+			}).then(onMIDISuccess, onMIDIFailure);
+		</script>
+	</body>
+</html>
