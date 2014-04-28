@@ -125,7 +125,8 @@
 							<br>
 							ブラウザはGoogle Chromeを使ってください。
 							<br>
-							WebMIDIAPIを使うためにGoogle Chromeを設定する必要があります。詳しくは<a href="http://otonanokagaku.net/nsx39/app.html">ポケットミクアプリのページ</a>を参考にしてください。
+							WebMIDIAPIを使うためにGoogle Chromeを設定する必要があります。詳しくは<a href="http://otonanokagaku.net/nsx39/app.html">ポケットミクアプリのページ</a>を参考にしてください。<br>
+							なお、flatkeyはryoyakawaiさんの<a href="https://github.com/ryoyakawai/WebMIDIAPIWrapper">Web MIDI API Wrapper</a>を使用させていただきました。
 						</div>
 					</div>
 				</div>
@@ -134,12 +135,10 @@
 			<select id="midiInputSelect" class="form-control" onchange="selectMidiInput()">
 				<option value="1">select input port</option>
 			</select>
-			<div class="form-group">
 				<label class="control-label">MIDI Out</label>
 				<select id="midiOutputSelect" class="form-control" onchange="selectMidiOutput()">
 					<option value="1">select output port</option>
 				</select>
-			</div>
 			<div>
 				<label class="checkbox">
 					<input type="checkbox" id="mouseovermode">
@@ -149,7 +148,7 @@
 				<div class="col-sm-3" id="button_area">
 					<!- Button Area 後でスクリプトで作成 ->
 				</div>
-				<div class="col-sm-4" id="button_area2">
+				<div class="col-sm-5" id="button_area2">
 					<!- Button Area2 後でスクリプトで作成 ->
 				</div>
 			</div>
@@ -198,9 +197,11 @@
 					case 'てぃ':
 					case 'ちゃ':
 					case 'つぁ':
-					case 'にぁ':
+					case 'にゃ':
 					case 'ひゃ':
-					case 'ふぃ':
+					case 'びゃ':
+					//case 'ぴゃ':
+					case 'ふぁ':
 					case 'みゃ':
 					case 'りゃ':
 						element.innerHTML += '<br>';
