@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>ポケミク てすと</title>
 		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<script src="js/nsx1tbl.js"></script>
 		<script src="js/nsx39.js"></script>
 		<script src="js/flatKeyboard.js"></script>
 
@@ -93,10 +94,10 @@
 			}
 
 			function sendChar(c) {
-				var msg = nsx39.getSysEx(c);
+				var msg = getSysEx(c);
 				if (msg) {
 					//showMidiMsg(msg);
-					output.send(msg, window.performance.now());
+					output.send(msg);
 				}
 			}
 
@@ -143,6 +144,9 @@
 				<label class="checkbox">
 					<input type="checkbox" id="mouseovermode">
 					mouseover mode </label>
+				<label class="checkbox">
+					<input type="checkbox" id="eVY1mode">
+					eVY1mode </label>
 			</div>
 			<div class="row">
 				<div class="col-sm-3" id="button_area">
@@ -160,7 +164,7 @@
 		</div>
 		<script type="text/javascript">
 			var element = document.createElement("div");
-			for (key in nsx39.textMap[1]) {
+			for (key in wordTbl1) {
 				switch (key) {
 					case 'か':
 					case 'さ':
@@ -187,7 +191,7 @@
 		</script>
 		<script type="text/javascript">
 			var element = document.createElement("div");
-			for (key in nsx39.textMap[2]) {
+			for (key in wordTbl2) {
 				switch (key) {
 					case 'きゃ':
 					case 'すぃ':
@@ -212,7 +216,7 @@
 				element.innerHTML += '<button　type="button" id="' + key + '" class="btn btn-default btn-sm" onmouseover="onSelectChar(this)" onclick="onClickChar(this)">' + key + '</button>';
 			}
 			document.getElementById("button_area2").appendChild(element);
-
+onmouseover
 			var fKey = new FlatKeyboard("keyboard");
 			var timerId = setInterval(function() {
 				fKey.draw();
