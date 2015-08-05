@@ -6,44 +6,18 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>ポケミク てすと</title>
 		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<script src="js/mididevice.js"></script>
 		<script src="js/nsx1tbl.js"></script>
 		<script src="js/nsx39.js"></script>
 		<script src="js/flatKeyboard.js"></script>
 
 		<script type="text/javascript">
-			var midiAccess = null;
-			var output = null;
-
 			function onMIDIMessage(event) {
 				console.log("Receive midi" + event);
 				if (output) {
 					output.send(event.data, window.performance.now());
 				}
 			}
-
-			function listInputsAndOutputs(access) {
-				var inputs = midiAccess.inputs();
-				var outputs = midiAccess.outputs();
-
-				console.log("inputs:" + inputs.length + " " + "outputs:" + outputs.length);
-				for ( i = 0; i < inputs.length; i++) {
-					console.log("Input port #" + i + ": type:'" + inputs[i].type + "' id:'" + inputs[i].id + "' manufacturer:'" + inputs[i].manufacturer + "' name:'" + inputs[i].name + "' version:'" + inputs[i].version + "'");
-					var option = document.createElement("option");
-
-					option.setAttribute("value", "midiInput");
-					option.appendChild(document.createTextNode(inputs[i].name));
-					document.getElementById("midiInputSelect").appendChild(option);
-				}
-
-				for ( i = 0; i < outputs.length; i++) {
-					console.log("Output port #" + i + ": type:'" + outputs[i].type + "' id:'" + outputs[i].id + "' manufacturer:'" + outputs[i].manufacturer + "' name:'" + outputs[i].name + "' version:'" + outputs[i].version + "'");
-					var option = document.createElement("option");
-					option.setAttribute("value", "midiOuput");
-					option.appendChild(document.createTextNode(outputs[i].name));
-					document.getElementById("midiOutputSelect").appendChild(option);
-				}
-			}
-
 			function onMIDISuccess(access) {
 				midiAccess = access;
 				console.log("midi ready!");
@@ -52,33 +26,6 @@
 
 			function onMIDIFailure(msg) {
 				console.log("Failed to midi available- " + msg);
-			}
-
-			function selectMidiInput() {
-				var select = document.getElementById("midiInputSelect");
-				var options = document.getElementById("midiInputSelect").options;
-				var value = options.item(select.selectedIndex).value;
-				console.log("midi input selected: " + select.selectedIndex);
-				try {
-					var inputs = midiAccess.inputs();
-					var input = inputs[select.selectedIndex - 1];
-					input.onmidimessage = onMIDIMessage;
-				} catch (e) {
-					console.error("Exception! Couldn't get i/o ports." + e);
-				}
-			}
-
-			function selectMidiOutput() {
-				var select = document.getElementById("midiOutputSelect");
-				var options = document.getElementById("midiOutputSelect").options;
-				var value = options.item(select.selectedIndex).value;
-				console.log("midi output selected: " + select.selectedIndex);
-				try {
-					var outputs = midiAccess.outputs();
-					output = outputs[select.selectedIndex - 1];
-				} catch (e) {
-					console.error("Exception! Couldn't get i/o ports." + e);
-				}
 			}
 
 			function onSelectChar(obj) {

@@ -147,7 +147,6 @@ function getSysEx(str) {
 		var data =　sysExHead.concat();
 		var worddata=nsx1tbl[word];
 		var test="test";
-		console.log(test.charCodeAt(0));
 		for (var i=0; i<worddata.length;i++) {
 			data.push(worddata.charCodeAt(i));
 		}
